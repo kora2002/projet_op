@@ -1,7 +1,7 @@
 import random
 import time
-import copy
 from solution import Solution
+
 
 def random_search_binary(problem, time_limit):
 
@@ -18,6 +18,6 @@ def random_search_binary(problem, time_limit):
         problem.eval(current)
 
         if current.f < best.f:
-            best = copy.deepcopy(current)
+            best = current
 
     return best

@@ -2,152 +2,152 @@
 # -*- coding: utf-8 -*-
 
 """
-	Mixed QUBO function V0
+    Mixed QUBO function V0
 
-	Author: 
-		Sébastien Verel
+    Author:
+        Sébastien Verel
 
-	Date: 
-		2026-03-27
+    Date:
+        2026-03-27
 
-	Licence:
-		CC-by
+    Licence:
+        CC-by
 """
 
 import math
 import json
 
 class MixQUBO:
-	"""
-		Input:
-			d: dimension of the continuous space
-			n: dimension of the binary space
-		
-	"""
-	def __init__(self, d = 0, n = 0):
-		self.d = d
-		self.n = n
+    """
+        Input:
+            d: dimension of the continuous space
+            n: dimension of the binary space
 
-		# list of terms
-		self.terms = []
+    """
+    def __init__(self, d = 0, n = 0):
+        self.d = d
+        self.n = n
 
-	"""
-		Define a term
+        # list of terms
+        self.terms = []
 
-		Input:
-			u,v : id of the continuous variables
-			i,j : id of the binary variables
-			c   : vector of dim 2 of the position of the maximum
-			m   : minimum value before scaling
-			J   : value of the intensity h(z,x) in [-J, J]
-	"""
-	def addTerm(self, u, v, i, j, c, m, J):
-		d2_max = 0
-		if c[0] >= 0:
-			d2_max = (-1 - c[0])**2
-		else:
-			d2_max = (1 - c[0])**2
-		if c[1] >= 0:
-			d2_max += (-1 - c[1])**2
-		else:
-			d2_max += (1 - c[1])**2
+    """
+        Define a term
 
-		# exponent
-		alpha = - math.log(m) / d2_max
+        Input:
+            u,v : id of the continuous variables
+            i,j : id of the binary variables
+            c   : vector of dim 2 of the position of the maximum
+            m   : minimum value before scaling
+            J   : value of the intensity h(z,x) in [-J, J]
+    """
+    def addTerm(self, u, v, i, j, c, m, J):
+        d2_max = 0
+        if c[0] >= 0:
+            d2_max = (-1 - c[0])**2
+        else:
+            d2_max = (1 - c[0])**2
+        if c[1] >= 0:
+            d2_max += (-1 - c[1])**2
+        else:
+            d2_max += (1 - c[1])**2
 
-		# shift
-		K = (1 + m) / 2
+        # exponent
+        alpha = - math.log(m) / d2_max
 
-		# scaling
-		A = 2 / (1 - m)
+        # shift
+        K = (1 + m) / 2
 
-		self.terms.append( {
-			'u':u, 'v':v, 'i':i, 'j':j, 
-			'c':c, 'm':m, 'J':J,
-			'alpha': alpha, 'K':K, 'A':A
-			} )
+        # scaling
+        A = 2 / (1 - m)
 
-	"""
-		Elementary function
+        self.terms.append( {
+            'u':u, 'v':v, 'i':i, 'j':j,
+            'c':c, 'm':m, 'J':J,
+            'alpha': alpha, 'K':K, 'A':A
+            } )
 
-		Input:
-			id : id the elementary function to define parameters
-			z  : vector of continuous variable from [-1, 1]
-			x  : vector of binary variable from {0, 1}
-		Output:
-			value of the function
-	"""
-	def h(self, id, z, x):
-		param = self.terms[id]
+    """
+        Elementary function
 
-		kernel = param['J'] * param['A'] * \
-			(math.exp( -param['alpha'] * \
-				( (z[ param['u'] ] - param['c'][0])**2 + (z[ param['v'] ] - param['c'][1])**2) ) \
-			 - param['K'])
+        Input:
+            id : id the elementary function to define parameters
+            z  : vector of continuous variable from [-1, 1]
+            x  : vector of binary variable from {0, 1}
+        Output:
+            value of the function
+    """
+    def h(self, id, z, x):
+        param = self.terms[id]
 
-		if x[ param['i'] ] == x[ param['j'] ]:
-			return kernel
-		else:
-			return -kernel
+        kernel = param['J'] * param['A'] * \
+            (math.exp( -param['alpha'] * \
+                ( (z[ param['u'] ] - param['c'][0])**2 + (z[ param['v'] ] - param['c'][1])**2) ) \
+             - param['K'])
 
-	"""
-		Evaluation function
+        if x[ param['i'] ] == x[ param['j'] ]:
+            return kernel
+        else:
+            return -kernel
 
-		Input:
-			z  : vector of continuous variable from [-1, 1]
-			x  : vector of binary variable from {0, 1}
-		Output:
-			value of the function
-	"""
-	def eval(self, solution):
-		f = 0
+    """
+        Evaluation function
 
-		for i in range(len(self.terms)):
-			f += self.h(i, solution.z, solution.x)
+        Input:
+            z  : vector of continuous variable from [-1, 1]
+            x  : vector of binary variable from {0, 1}
+        Output:
+            value of the function
+    """
+    def eval(self, solution):
+        f = 0
 
-		solution.f = f
+        for i in range(len(self.terms)):
+            f += self.h(i, solution.z, solution.x)
 
-	def to_json(self, info = None):
-		s = "{\"problem\":{"
+        solution.f = f
 
-		if info != None:
-			s += "\"info\":" + info + ", "
-		else:
-			s += "\"info\":{}, "
+    def to_json(self, info = None):
+        s = "{\"problem\":{"
 
-		s += "\"d\":%d, \"n\":%d, \"terms\":" % (self.d, self.n)
+        if info != None:
+            s += "\"info\":" + info + ", "
+        else:
+            s += "\"info\":{}, "
 
-		s += json.dumps(self.terms, separators=(',', ':'))
+        s += "\"d\":%d, \"n\":%d, \"terms\":" % (self.d, self.n)
 
-		s += "}}"
+        s += json.dumps(self.terms, separators=(',', ':'))
 
-		return s	
+        s += "}}"
 
-	"""
-		Read the instance in json format string
-	"""
-	def from_json(self, json_string):
-		data = json.load(json_string)
+        return s
 
-		self.d = data['problem']['d']
-		self.n = data['problem']['n']
+    """
+        Read the instance in json format string
+    """
+    def from_json(self, json_string):
+        data = json.load(json_string)
 
-		# list of terms
-		self.terms = data['problem']['terms']
+        self.d = data['problem']['d']
+        self.n = data['problem']['n']
 
-	def write_json(self, file_name, info = None):
-		json_file = open(file_name, "w")
-		json_file.write(self.to_json(info))
-		json_file.close()
+        # list of terms
+        self.terms = data['problem']['terms']
 
-	def read_json(self, file_name):
-		with open(file_name, 'r+') as f:
-		    self.from_json(f)
+    def write_json(self, file_name, info = None):
+        json_file = open(file_name, "w")
+        json_file.write(self.to_json(info))
+        json_file.close()
 
-	def __str__(self):
-		s = "{\"d\":%d, \"n\":%d, \"terms\":" % (self.d, self.n)
+    def read_json(self, file_name):
+        with open(file_name, 'r+') as f:
+            self.from_json(f)
 
-		s += json.dumps(self.terms, separators=(',', ':')) + '}'
+    def __str__(self):
+        s = "{\"d\":%d, \"n\":%d, \"terms\":" % (self.d, self.n)
 
-		return s
+        s += json.dumps(self.terms, separators=(',', ':')) + '}'
+
+        return s
 

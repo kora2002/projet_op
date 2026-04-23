@@ -1,42 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import mixQUBO as mxq
+from mixQUBO import MixQUBO
 import statistics
 from datetime import datetime
 from random_search import random_search_binary
+from config import TIME_LIMIT,NB_RUNS
 
 def main():
-    f = mxq.MixQUBO()
-    f.read_json("../instances/mxqubo_v0_0.json")
-
-
-    time_limit = 7.0
+    problem = MixQUBO()
+    problem.read_json("../instances/mxqubo_v0_0.json")
 
     results = []
 
-    with open("results_random_binary.csv", "a") as file:
-        file.write(f"\n=== Lancement : {datetime.now()} ===\n")
-        file.write("id f z x\n")
+    for i in range(NB_RUNS):
+        best = random_search_binary(problem, TIME_LIMIT)
+        results.append(best.f)
+        print(f"Run {i + 1}/30 : {best.f:.4f}")
 
-        for i in range(30):
-            best = random_search_binary(f, time_limit)
-            results.append(best.f)
-            print(f"Run {i+1}: {best.f:.6f}")
-            # utilise le __str__ du prof directement
-            file.write(f"{i} {str(best)}\n")
+    print(f"\nMeilleur   : {min(results):.4f}")
+    print(f"Pire       : {max(results):.4f}")
+    print(f"Moyenne    : {statistics.mean(results):.4f}")
+    print(f"Ecart-type : {statistics.stdev(results):.4f}")
 
-        # Statistiques
-        stats = (
-            f"\nMin       : {min(results):.6f}\n"
-            f"Max       : {max(results):.6f}\n"
-            f"Moyenne   : {statistics.mean(results):.6f}\n"
-            f"Écart-type: {statistics.stdev(results):.6f}\n"
-            f"Médiane   : {statistics.median(results):.6f}\n"
-        )
-        print("\n--- Statistiques ---")
-        print(stats)
-        file.write(stats)
 
 if __name__ == "__main__":
     main()
+
+"""
+1. Grande variabilité
+L'écart entre le meilleur (-6034) et le pire (-4424) est de 1610 points. L'écart-type de 344 confirme que les résultats sont très instables d'un run à l'autre.
+2. Dépendance au hasard
+Certains runs donnent de bons résultats (run 17 : -6034) et d'autres sont médiocres (run 22 : -4424). L'algorithme n'apprend rien entre les runs.
+3. Aucune exploitation
+La recherche aléatoire explore l'espace sans mémoire ni direction. Elle ne tire pas profit des bonnes solutions trouvées pour en chercher de meilleures dans leur voisinage.
+4. Sert de baseline
+La moyenne de -5243 sera notre référence. Tout algorithme plus intelligent devra faire mieux que cette valeur.
+"""
