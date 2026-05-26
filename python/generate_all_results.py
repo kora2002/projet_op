@@ -17,7 +17,7 @@ import multiprocessing as mp
 
 from mixQUBO import MixQUBO
 from random_search import random_search_binary
-from hill_climbing import hill_climbing_binary
+from hill_climbing import ils_binary
 from sa_algorithm import simulated_annealing_binary
 from config import TIME_LIMIT, NB_RUNS, NB_INSTANCES, INSTANCES_DIR
 
@@ -27,7 +27,7 @@ from config import TIME_LIMIT, NB_RUNS, NB_INSTANCES, INSTANCES_DIR
 
 ALGORITHMES = {
     "random_search"       : random_search_binary,
-    "hill_climbing"       : hill_climbing_binary,
+    "hill_climbing"       : ils_binary,
     "simulated_annealing" : simulated_annealing_binary,
 }
 

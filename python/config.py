@@ -19,3 +19,4 @@ NB_INSTANCES = 16
 
 # Repertoire des instances
 INSTANCES_DIR = "../instances"
+

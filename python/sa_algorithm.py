@@ -4,7 +4,7 @@ import time
 from solution import Solution
 
 # ------------------------------------------------------------------ #
-#  Simulated Annealing                                             #
+#  Simulated Annealing binaire                                        #
 # ------------------------------------------------------------------ #
 
 def simulated_annealing_binary(problem, time_limit):
@@ -18,11 +18,15 @@ def simulated_annealing_binary(problem, time_limit):
     current.f = best.f
 
     # Parametres de temperature
-    temperature = 100.0
-    refroidissement = 0.9999
+    T0        = 100.0   # temperature initiale
+    T_min     = 0.01    # temperature plancher — evite la division par zero
+    cooling   = 0.9999  # taux de refroidissement geometrique
+
+    temperature = T0
 
     start = time.time()
     while time.time() - start < time_limit:
+
         # On copie et on flip un bit
         voisin = Solution(problem.d, problem.n)
         voisin.x = current.x[:]
@@ -40,7 +44,8 @@ def simulated_annealing_binary(problem, time_limit):
         if current.f < best.f:
             best = current
 
-        # On refroidit
-        temperature *= refroidissement
+        # On refroidit — on ne descend pas sous T_min
+        if temperature > T_min:
+            temperature *= cooling
 
     return best

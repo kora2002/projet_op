@@ -1,8 +1,7 @@
-
 import statistics
 from mixQUBO import MixQUBO
-from hill_climbing import hill_climbing_binary
-from config import TIME_LIMIT, NB_RUNS,INSTANCES_DIR
+from hill_climbing import ils_binary
+from config import TIME_LIMIT, NB_RUNS, INSTANCES_DIR
 
 # ------------------------------------------------------------------ #
 #  Test sur l'instance 0 avec 30 runs                                #
@@ -15,9 +14,9 @@ def main():
     results = []
 
     for i in range(NB_RUNS):
-        best = hill_climbing_binary(problem, TIME_LIMIT)
+        best = ils_binary(problem, TIME_LIMIT)
         results.append(best.f)
-        print(f"Run {i+1}/30 : {best.f:.4f}")
+        print(f"Run {i+1}/{NB_RUNS} : {best.f:.4f}")
 
     print(f"\nMeilleur   : {min(results):.4f}")
     print(f"Pire       : {max(results):.4f}")
