@@ -4,7 +4,6 @@ from solution import Solution
 
 
 def random_search_continuous(problem, time_limit):
-    """ on x = [0, 0, ..., 0] """
     best = Solution(problem.d, problem.n)
     best.x = [0] * problem.n                                      # on met x à 0
     best.z = [random.uniform(-1, 1) for _ in range(problem.d)]    # z est pris aléatoire

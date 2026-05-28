@@ -1,17 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-"""
-    Génération des résultats CSV — partie continue (multiprocessing).
-
-    x = 0...0 fixé, optimisation de z dans [-1, 1]^d.
-
-    Chaque (algorithme, instance) tourne en parallèle sur un cœur distinct.
-
-    Colonnes results_summary_continuous.csv : algorithme, instance, min, max, moyenne, ecart_type, mediane
-    Colonnes results_detail_continuous.csv  : algorithme, instance, run, f
-"""
-
 import csv
 import statistics
 import multiprocessing as mp
@@ -22,10 +8,6 @@ from hill_climbing_continuous import hill_climbing_continuous
 from recuit_simule_continuous import simulated_annealing_continuous
 from config import TIME_LIMIT, NB_RUNS, NB_INSTANCES, INSTANCES_DIR
 
-# ------------------------------------------------------------------ #
-#  Configuration                                                      #
-# ------------------------------------------------------------------ #
-
 ALGORITHMES = {
     "random_search_cont"       : random_search_continuous,
     "hill_climbing_cont"       : hill_climbing_continuous,
@@ -35,9 +17,6 @@ ALGORITHMES = {
 OUTPUT_SUMMARY = "results_summary_continuous.csv"
 OUTPUT_DETAIL  = "results_detail_continuous.csv"
 
-# ------------------------------------------------------------------ #
-#  Tâche unitaire (1 algo x 1 instance x NB_RUNS runs)               #
-# ------------------------------------------------------------------ #
 
 def run_task(args):
     algo_name, instance_id = args
@@ -57,10 +36,6 @@ def run_task(args):
           f"| moy={statistics.mean(r for _, r in results):.2f}", flush=True)
 
     return algo_name, instance_id, results
-
-# ------------------------------------------------------------------ #
-#  Main                                                               #
-# ------------------------------------------------------------------ #
 
 def main():
     tasks = [
@@ -104,9 +79,7 @@ def main():
     summary_rows.sort(key=lambda r: (r["algorithme"], r["instance"]))
     detail_rows.sort(key=lambda r:  (r["algorithme"], r["instance"], r["run"]))
 
-    # ---------------------------------------------------------------- #
-    #  Ecriture CSV                                                     #
-    # ---------------------------------------------------------------- #
+
     with open(OUTPUT_SUMMARY, "w", newline="") as f:
         writer = csv.DictWriter(
             f, fieldnames=["algorithme", "instance", "min", "max",

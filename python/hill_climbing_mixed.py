@@ -1,11 +1,3 @@
-
-"""
-    Hill Climbing mixte par alternance pour mixQUBO
-    - best-improvement optimisé en mémoire (backtrack)
-    - copie explicite pour éviter les bugs de référence
-    - critère d'arrêt : optimum local strict (z ET x) + temps limite
-"""
-
 import random
 import time
 from solution import Solution

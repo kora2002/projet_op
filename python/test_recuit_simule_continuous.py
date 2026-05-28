@@ -27,20 +27,6 @@ def main():
     print(f"Ecart-type : {statistics.stdev(results):.4f}")
     print(f"Mediane    : {statistics.median(results):.4f}")
 
-    """
-    Commentaires attendus :
-    - Le SA dépasse le Hill Climbing grâce à sa capacité à s'échapper
-      des optima locaux en acceptant parfois des solutions moins bonnes.
-    - Le sigma adaptatif (proportionnel à T) permet une exploration large
-      au début puis une exploitation fine en fin de recherche.
-    - L'écart-type devrait être plus faible que le HC : le SA évite
-      les mauvais bassins comme -4140 observés en Hill Climbing.
-    - Progression attendue :
-        Random Search  → -4845  (baseline)
-        Hill Climbing  → -5375  (+11% vs RS)
-        Simulated Ann. → ???    (mieux que HC)
-    """
-
 
 if __name__ == "__main__":
     main()

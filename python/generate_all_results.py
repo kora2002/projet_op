@@ -18,9 +18,6 @@ from hill_climbing import ils_binary
 from sa_algorithm import simulated_annealing_binary
 from config import TIME_LIMIT, NB_RUNS, NB_INSTANCES, INSTANCES_DIR
 
-# ------------------------------------------------------------------ #
-#  Configuration                                                      #
-# ------------------------------------------------------------------ #
 
 ALGORITHMES = {
     "random_search"       : random_search_binary,
@@ -31,9 +28,6 @@ ALGORITHMES = {
 OUTPUT_SUMMARY = "results_summary.csv"
 OUTPUT_DETAIL  = "results_detail.csv"
 
-# ------------------------------------------------------------------ #
-#  Tâche unitaire (1 algo x 1 instance x NB_RUNS runs)               #
-# ------------------------------------------------------------------ #
 
 def run_task(args):
     algo_name, instance_id = args
@@ -53,10 +47,6 @@ def run_task(args):
           f"| moy={statistics.mean(r for _, r in results):.2f}", flush=True)
 
     return algo_name, instance_id, results
-
-# ------------------------------------------------------------------ #
-#  Main                                                               #
-# ------------------------------------------------------------------ #
 
 def main():
     tasks = [
@@ -96,13 +86,9 @@ def main():
                 "f"          : round(f, 6),
             })
 
-    # Tri pour lisibilite
     summary_rows.sort(key=lambda r: (r["algorithme"], r["instance"]))
     detail_rows.sort(key=lambda r: (r["algorithme"], r["instance"], r["run"]))
 
-    # ---------------------------------------------------------------- #
-    #  Ecriture CSV                                                     #
-    # ---------------------------------------------------------------- #
     with open(OUTPUT_SUMMARY, "w", newline="") as f:
         writer = csv.DictWriter(
             f, fieldnames=["algorithme", "instance", "min", "max",

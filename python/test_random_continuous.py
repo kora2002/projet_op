@@ -21,13 +21,6 @@ def main():
     print(f"Ecart-type : {statistics.stdev(results):.4f}")
     print(f"Mediane    : {statistics.median(results):.4f}")
 
-    """
-    Commentaires attendus :
-    - Grande variabilité entre les runs : la recherche aléatoire explore sans mémoire.
-    - Les résultats dépendent entièrement du hasard, aucune exploitation du voisinage.
-    - Cette moyenne servira de baseline pour comparer les méthodes locales.
-    """
-
 
 if __name__ == "__main__":
     main()

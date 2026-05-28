@@ -27,19 +27,6 @@ def main():
     print(f"Ecart-type : {statistics.stdev(results):.4f}")
     print(f"Mediane    : {statistics.median(results):.4f}")
 
-    """
-    Commentaires attendus :
-    - Le SA mixte est attendu comme le meilleur algorithme du projet.
-    - Le refroidissement basé sur le temps réel garantit une exploration
-      large au début et une exploitation fine en fin de recherche.
-    - L'acceptation probabiliste permet de s'échapper des optima locaux
-      contrairement au Hill Climbing mixte.
-    - Progression attendue :
-        Random Search mixte  → baseline
-        Hill Climbing mixte  → amélioration significative
-        SA mixte             → meilleur sur moyenne et stabilité
-    """
-
 
 if __name__ == "__main__":
     main()

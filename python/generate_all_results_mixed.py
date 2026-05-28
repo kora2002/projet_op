@@ -1,14 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-"""
-    Génération des résultats CSV — partie mixte (multiprocessing).
-
-    z dans [-1, 1]^d et x dans {0, 1}^n optimisés simultanément.
-
-    Colonnes results_summary_mixed.csv : algorithme, instance, min, max, moyenne, ecart_type, mediane
-    Colonnes results_detail_mixed.csv  : algorithme, instance, run, f
-"""
 
 import csv
 import statistics
@@ -33,10 +22,6 @@ ALGORITHMES = {
 OUTPUT_SUMMARY = "results_summary_mixed.csv"
 OUTPUT_DETAIL  = "results_detail_mixed.csv"
 
-# ------------------------------------------------------------------ #
-#  Tâche unitaire (1 algo x 1 instance x NB_RUNS runs)               #
-# ------------------------------------------------------------------ #
-
 def run_task(args):
     algo_name, instance_id = args
 
@@ -55,10 +40,6 @@ def run_task(args):
           f"| moy={statistics.mean(r for _, r in results):.2f}", flush=True)
 
     return algo_name, instance_id, results
-
-# ------------------------------------------------------------------ #
-#  Main                                                               #
-# ------------------------------------------------------------------ #
 
 def main():
     tasks = [

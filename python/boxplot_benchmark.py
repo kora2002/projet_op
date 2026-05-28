@@ -1,22 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-"""
-    Visualisation des résultats par boxplot.
-
-    - Abscisse : instances (0 à 15)
-    - Ordonnée : valeur de f (score)
-    - Une figure par algorithme + une figure de comparaison globale
-"""
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
 
-# ------------------------------------------------------------------ #
-#  Chargement                                                         #
-# ------------------------------------------------------------------ #
 
 df = pd.read_csv("results_detail.csv")
 
@@ -35,9 +21,6 @@ LABELS = {
     "simulated_annealing": "Simulated Annealing",
 }
 
-# ------------------------------------------------------------------ #
-#  Figure 1 : une sous-figure par algorithme                         #
-# ------------------------------------------------------------------ #
 
 fig, axes = plt.subplots(len(ALGOS), 1, figsize=(16, 4 * len(ALGOS)), sharex=True)
 fig.suptitle("Boxplots par algorithme — 16 instances × 30 runs", fontsize=14, fontweight="bold")
@@ -65,10 +48,6 @@ plt.tight_layout()
 plt.savefig("boxplot_par_algo.png", dpi=150, bbox_inches="tight")
 print("[OK] boxplot_par_algo.png")
 
-# ------------------------------------------------------------------ #
-#  Figure 2 : comparaison des 3 algos côte à côte par instance       #
-# ------------------------------------------------------------------ #
-
 fig2, ax2 = plt.subplots(figsize=(18, 6))
 fig2.suptitle("Comparaison des algorithmes par instance", fontsize=14, fontweight="bold")
 
@@ -91,7 +70,6 @@ for offset, algo in zip(offsets, ALGOS):
         patch.set_facecolor(COLORS[algo])
         patch.set_alpha(0.75)
 
-# Légende
 patches = [
     mpatches.Patch(color=COLORS[algo], label=LABELS[algo])
     for algo in ALGOS
