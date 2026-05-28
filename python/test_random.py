@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 from mixQUBO import MixQUBO
 import statistics
 from datetime import datetime

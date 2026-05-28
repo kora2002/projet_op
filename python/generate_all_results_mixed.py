@@ -1,11 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 """
-    Génération des résultats CSV — version parallélisée (multiprocessing).
+    Génération des résultats CSV — partie mixte (multiprocessing).
 
-    Chaque (algorithme, instance) tourne en parallèle sur un cœur distinct.
-    Le gain est proportionnel au nombre de cœurs disponibles.
+    z dans [-1, 1]^d et x dans {0, 1}^n optimisés simultanément.
 
-    Colonnes results_summary.csv : algorithme, instance, min, max, moyenne, ecart_type, mediane
-    Colonnes results_detail.csv  : algorithme, instance, run, f
+    Colonnes results_summary_mixed.csv : algorithme, instance, min, max, moyenne, ecart_type, mediane
+    Colonnes results_detail_mixed.csv  : algorithme, instance, run, f
 """
 
 import csv
@@ -13,9 +15,9 @@ import statistics
 import multiprocessing as mp
 
 from mixQUBO import MixQUBO
-from random_search import random_search_binary
-from hill_climbing import ils_binary
-from sa_algorithm import simulated_annealing_binary
+from random_search_mixed import random_search_mixed
+from hill_climbing_mixed import hill_climbing_mixed
+from sa_mixed import sa_mixed
 from config import TIME_LIMIT, NB_RUNS, NB_INSTANCES, INSTANCES_DIR
 
 # ------------------------------------------------------------------ #
@@ -23,13 +25,13 @@ from config import TIME_LIMIT, NB_RUNS, NB_INSTANCES, INSTANCES_DIR
 # ------------------------------------------------------------------ #
 
 ALGORITHMES = {
-    "random_search"       : random_search_binary,
-    "hill_climbing"       : ils_binary,
-    "simulated_annealing" : simulated_annealing_binary,
+    "random_search_mixed" : random_search_mixed,
+    "hill_climbing_mixed" : hill_climbing_mixed,
+    "sa_mixed"            : sa_mixed,
 }
 
-OUTPUT_SUMMARY = "results_summary.csv"
-OUTPUT_DETAIL  = "results_detail.csv"
+OUTPUT_SUMMARY = "results_summary_mixed.csv"
+OUTPUT_DETAIL  = "results_detail_mixed.csv"
 
 # ------------------------------------------------------------------ #
 #  Tâche unitaire (1 algo x 1 instance x NB_RUNS runs)               #
@@ -66,11 +68,11 @@ def main():
     ]
 
     nb_cores = mp.cpu_count()
-    print(f"Lancement de {len(tasks)} taches sur {nb_cores} coeur(s)...\n")
+    print(f"Lancement de {len(tasks)} taches sur {nb_cores} coeur(s)...")
+    print(f"Optimisation mixte : z dans [-1,1]^d et x dans {{0,1}}^n\n")
 
     with mp.Pool(processes=nb_cores) as pool:
         all_results = pool.map(run_task, tasks)
-
 
     summary_rows = []
     detail_rows  = []
@@ -96,13 +98,9 @@ def main():
                 "f"          : round(f, 6),
             })
 
-    # Tri pour lisibilite
     summary_rows.sort(key=lambda r: (r["algorithme"], r["instance"]))
-    detail_rows.sort(key=lambda r: (r["algorithme"], r["instance"], r["run"]))
+    detail_rows.sort(key=lambda r:  (r["algorithme"], r["instance"], r["run"]))
 
-    # ---------------------------------------------------------------- #
-    #  Ecriture CSV                                                     #
-    # ---------------------------------------------------------------- #
     with open(OUTPUT_SUMMARY, "w", newline="") as f:
         writer = csv.DictWriter(
             f, fieldnames=["algorithme", "instance", "min", "max",

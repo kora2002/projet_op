@@ -1,11 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 """
-    Génération des résultats CSV — version parallélisée (multiprocessing).
+    Génération des résultats CSV — partie continue (multiprocessing).
+
+    x = 0...0 fixé, optimisation de z dans [-1, 1]^d.
 
     Chaque (algorithme, instance) tourne en parallèle sur un cœur distinct.
-    Le gain est proportionnel au nombre de cœurs disponibles.
 
-    Colonnes results_summary.csv : algorithme, instance, min, max, moyenne, ecart_type, mediane
-    Colonnes results_detail.csv  : algorithme, instance, run, f
+    Colonnes results_summary_continuous.csv : algorithme, instance, min, max, moyenne, ecart_type, mediane
+    Colonnes results_detail_continuous.csv  : algorithme, instance, run, f
 """
 
 import csv
@@ -13,9 +17,9 @@ import statistics
 import multiprocessing as mp
 
 from mixQUBO import MixQUBO
-from random_search import random_search_binary
-from hill_climbing import ils_binary
-from sa_algorithm import simulated_annealing_binary
+from random_search_continuous import random_search_continuous
+from hill_climbing_continuous import hill_climbing_continuous
+from recuit_simule_continuous import simulated_annealing_continuous
 from config import TIME_LIMIT, NB_RUNS, NB_INSTANCES, INSTANCES_DIR
 
 # ------------------------------------------------------------------ #
@@ -23,13 +27,13 @@ from config import TIME_LIMIT, NB_RUNS, NB_INSTANCES, INSTANCES_DIR
 # ------------------------------------------------------------------ #
 
 ALGORITHMES = {
-    "random_search"       : random_search_binary,
-    "hill_climbing"       : ils_binary,
-    "simulated_annealing" : simulated_annealing_binary,
+    "random_search_cont"       : random_search_continuous,
+    "hill_climbing_cont"       : hill_climbing_continuous,
+    "simulated_annealing_cont" : simulated_annealing_continuous,
 }
 
-OUTPUT_SUMMARY = "results_summary.csv"
-OUTPUT_DETAIL  = "results_detail.csv"
+OUTPUT_SUMMARY = "results_summary_continuous.csv"
+OUTPUT_DETAIL  = "results_detail_continuous.csv"
 
 # ------------------------------------------------------------------ #
 #  Tâche unitaire (1 algo x 1 instance x NB_RUNS runs)               #
@@ -49,7 +53,7 @@ def run_task(args):
         best = algo_fn(problem, TIME_LIMIT)
         results.append((run, best.f))
 
-    print(f"[OK] {algo_name:22s} | instance {instance_id:02d} "
+    print(f"[OK] {algo_name:26s} | instance {instance_id:02d} "
           f"| moy={statistics.mean(r for _, r in results):.2f}", flush=True)
 
     return algo_name, instance_id, results
@@ -66,11 +70,11 @@ def main():
     ]
 
     nb_cores = mp.cpu_count()
-    print(f"Lancement de {len(tasks)} taches sur {nb_cores} coeur(s)...\n")
+    print(f"Lancement de {len(tasks)} taches sur {nb_cores} coeur(s)...")
+    print(f"x = 0...0 fixe — optimisation continue de z dans [-1, 1]^d\n")
 
     with mp.Pool(processes=nb_cores) as pool:
         all_results = pool.map(run_task, tasks)
-
 
     summary_rows = []
     detail_rows  = []
@@ -96,9 +100,9 @@ def main():
                 "f"          : round(f, 6),
             })
 
-    # Tri pour lisibilite
+    # Tri pour lisibilité
     summary_rows.sort(key=lambda r: (r["algorithme"], r["instance"]))
-    detail_rows.sort(key=lambda r: (r["algorithme"], r["instance"], r["run"]))
+    detail_rows.sort(key=lambda r:  (r["algorithme"], r["instance"], r["run"]))
 
     # ---------------------------------------------------------------- #
     #  Ecriture CSV                                                     #
