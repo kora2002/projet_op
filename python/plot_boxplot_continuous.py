@@ -1,19 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-    Boîtes à moustaches par instance — partie continue
-    Lecture de results_detail_continuous.csv
-    Un graphique par instance (16 instances)
-"""
+
 
 import csv
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
-# ------------------------------------------------------------------ #
-#  Lecture du CSV                                                     #
-# ------------------------------------------------------------------ #
+
 
 # data[instance_id][algo] = [f, f, f, ...]
 data = defaultdict(lambda: defaultdict(list))
@@ -30,9 +24,6 @@ couleurs = ["#4C72B0", "#DD8452", "#55A868"]
 
 nb_instances = len(data)  # 16
 
-# ------------------------------------------------------------------ #
-#  Un subplot par instance (4 lignes x 4 colonnes)                   #
-# ------------------------------------------------------------------ #
 
 fig, axes = plt.subplots(4, 4, figsize=(18, 14))
 fig.suptitle("Comparaison des algorithmes par instance — Optimisation continue",

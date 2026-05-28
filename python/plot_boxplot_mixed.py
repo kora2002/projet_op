@@ -1,19 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-    Boîtes à moustaches par instance — partie mixte
-    Lecture de results_detail_mixed.csv
-    Un graphique par instance (16 instances) en grille 4x4
-"""
 
 import csv
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
-# ------------------------------------------------------------------ #
-#  Lecture du CSV                                                     #
-# ------------------------------------------------------------------ #
 
 data = defaultdict(lambda: defaultdict(list))
 
@@ -27,9 +19,6 @@ ordre    = ["random_search_mixed", "hill_climbing_mixed", "sa_mixed"]
 labels   = ["Random\nSearch", "Hill\nClimbing", "SA\nMixte"]
 couleurs = ["#4C72B0", "#DD8452", "#55A868"]
 
-# ------------------------------------------------------------------ #
-#  Grille 4x4 — un subplot par instance                              #
-# ------------------------------------------------------------------ #
 
 fig, axes = plt.subplots(4, 4, figsize=(18, 14))
 fig.suptitle("Comparaison des algorithmes par instance — Optimisation mixte",

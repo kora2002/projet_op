@@ -3,12 +3,10 @@ import random
 import time
 from solution import Solution
 
-# ------------------------------------------------------------------ #
-#  Simulated Annealing binaire                                        #
-# ------------------------------------------------------------------ #
+
 
 def simulated_annealing_binary(problem, time_limit):
-    # Solution initiale aleatoire
+
     best = Solution(problem.d, problem.n)
     best.x = [random.randint(0, 1) for _ in range(problem.n)]
     problem.eval(best)
@@ -17,10 +15,10 @@ def simulated_annealing_binary(problem, time_limit):
     current.x = best.x[:]
     current.f = best.f
 
-    # Parametres de temperature
-    T0        = 100.0   # temperature initiale
-    T_min     = 0.01    # temperature plancher — evite la division par zero
-    cooling   = 0.9999  # taux de refroidissement geometrique
+
+    T0        = 100.0
+    T_min     = 0.01
+    cooling   = 0.9999
 
     temperature = T0
 

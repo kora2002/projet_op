@@ -23,14 +23,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-"""
-1. Grande variabilité
-L'écart entre le meilleur (-6034) et le pire (-4424) est de 1610 points. L'écart-type de 344 confirme que les résultats sont très instables d'un run à l'autre.
-2. Dépendance au hasard
-Certains runs donnent de bons résultats (run 17 : -6034) et d'autres sont médiocres (run 22 : -4424). L'algorithme n'apprend rien entre les runs.
-3. Aucune exploitation
-La recherche aléatoire explore l'espace sans mémoire ni direction. Elle ne tire pas profit des bonnes solutions trouvées pour en chercher de meilleures dans leur voisinage.
-4. Sert de baseline
-La moyenne de -5243 sera notre référence. Tout algorithme plus intelligent devra faire mieux que cette valeur.
-"""
